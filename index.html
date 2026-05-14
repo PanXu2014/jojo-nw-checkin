@@ -786,12 +786,12 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 async function saveToCloud(userId) {
   try {
     var resp = await fetch(SUPABASE_URL + '/rest/v1/checkin_data', {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'resolution=merge-duplicates'
+        'Prefer': 'resolution=upsert'
       },
       body: JSON.stringify({ user_id: userId, state: state })
     });
