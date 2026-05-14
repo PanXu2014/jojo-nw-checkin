@@ -793,7 +793,7 @@ async function saveToCloud(userId) {
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
         'Prefer': 'resolution=merge-duplicates'
       },
-      body: JSON.stringify({ userId: userId, state: state })
+      body: JSON.stringify({ user_id: userId, state: state })
     });
     if (resp.ok) {
       var el = document.getElementById('syncStatus');
@@ -808,7 +808,7 @@ async function saveToCloud(userId) {
 async function loadFromCloud(userId) {
   try {
     var resp = await fetch(
-      SUPABASE_URL + '/rest/v1/checkin_data?userId=eq.' + encodeURIComponent(userId) + '&order=updated_at.desc&limit=1',
+      SUPABASE_URL + '/rest/v1/checkin_data?user_id=eq.' + encodeURIComponent(userId) + '&order=updated_at.desc&limit=1',
       {
         headers: {
           'apikey': SUPABASE_ANON_KEY,
