@@ -505,7 +505,7 @@
     </div>
     <div class="cloud-btns">
       <button class="cloud-btn" onclick="exportData()">📤 导出数据</button>
-      <button class="cloud-btn" onclick="document.getElementById(\'importFile\').click()">📥 导入数据</button>
+      <button class="cloud-btn" onclick="document.getElementById('importFile').click()">📥 导入数据</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
       <button class="cloud-btn" onclick="showSyncCode()">🔗 同步码</button>
       <button class="cloud-btn" onclick="enterSyncCode()">📱 输入同步码</button>
@@ -513,8 +513,8 @@
   </div>
 
   <div class="tab-nav">
-    <button class="tab-btn active" onclick="switchTab(\'checkin\')">📋 每日打卡</button>
-    <button class="tab-btn" onclick="switchTab(\'rewards\')">🎁 积分兑换</button>
+    <button class="tab-btn active" onclick="switchTab('checkin')">📋 每日打卡</button>
+    <button class="tab-btn" onclick="switchTab('rewards')">🎁 积分兑换</button>
   </div>
 
   <div class="main-content active" id="checkinTab">
@@ -751,11 +751,11 @@ function loadState() {
   } else {
     // Check URL for sync code
     var urlParams = new URLSearchParams(window.location.search);
-    var syncParam = urlParams.get(\'sync\');
+    var syncParam = urlParams.get('sync');
     if (syncParam) {
       try {
         var syncUserId = atob(syncParam);
-        if (syncUserId && syncUserId.startsWith(\'user_\')) {
+        if (syncUserId && syncUserId.startsWith('user_')) {
           localStorage.setItem("studyTrackerUserId", syncUserId);
           loadFromCloud(syncUserId).then(function() { renderDays(); updateStats(); });
         }
@@ -763,9 +763,9 @@ function loadState() {
     }
     if (!syncParam || !localStorage.getItem("studyTrackerUserId")) {
       // Generate a user ID for this browser
-      var userId = \'user_\' + Date.now() + \'_\' + Math.random().toString(36).substr(2, 9);
+      var userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       localStorage.setItem("studyTrackerUserId", userId);
-      syncStatusEl.textContent = \'本地模式\';
+      syncStatusEl.textContent = '本地模式';
     }
   }
 }
@@ -781,38 +781,38 @@ function saveState() {
 // Cloud sync functions
 function setSyncBase(url) { SYNC_URL_BASE = url; }
 // Supabase direct API (works on both Netlify and GitHub Pages)
-const SUPABASE_URL = \'https://mdkokgepknmphhyjgrvv.supabase.co\';
-const SUPABASE_ANON_KEY = \'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ka29rZ2Vwa25tcGhoeWpncnZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODc1NTksImV4cCI6MjA5NDE2MzU1OX0.sFJ5Ebtty1H2shwwPy-g8H3brVShOJz-3dEFB2x_IkA\';
+const SUPABASE_URL = 'https://mdkokgepknmphhyjgrvv.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ka29rZ2Vwa25tcGhoeWpncnZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODc1NTksImV4cCI6MjA5NDE2MzU1OX0.sFJ5Ebtty1H2shwwPy-g8H3brVShOJz-3dEFB2x_IkA';
 async function saveToCloud(userId) {
   try {
-    var resp = await fetch(SUPABASE_URL + \'/rest/v1/checkin_data\', {
-      method: \'POST\',
+    var resp = await fetch(SUPABASE_URL + '/rest/v1/checkin_data', {
+      method: 'POST',
       headers: {
-        \'Content-Type\': \'application/json\',
-        \'apikey\': SUPABASE_ANON_KEY,
-        \'Authorization\': \'Bearer \' + SUPABASE_ANON_KEY,
-        \'Prefer\': \'resolution=merge-duplicates\'
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'resolution=merge-duplicates'
       },
       body: JSON.stringify({ userId: userId, state: state })
     });
     if (resp.ok) {
-      var el = document.getElementById(\'syncStatus\');
-      if (el) el.textContent = \'已同步\';
+      var el = document.getElementById('syncStatus');
+      if (el) el.textContent = '已同步';
     }
   } catch(e) {
-    var el = document.getElementById(\'syncStatus\');
-    if (el) el.textContent = \'离线\';
+    var el = document.getElementById('syncStatus');
+    if (el) el.textContent = '离线';
   }
 }
 
 async function loadFromCloud(userId) {
   try {
     var resp = await fetch(
-      SUPABASE_URL + \'/rest/v1/checkin_data?userId=eq.\' + encodeURIComponent(userId) + \'&order=updated_at.desc&limit=1\',
+      SUPABASE_URL + '/rest/v1/checkin_data?userId=eq.' + encodeURIComponent(userId) + '&order=updated_at.desc&limit=1',
       {
         headers: {
-          \'apikey\': SUPABASE_ANON_KEY,
-          \'Authorization\': \'Bearer \' + SUPABASE_ANON_KEY
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
         }
       }
     );
@@ -828,39 +828,39 @@ async function loadFromCloud(userId) {
           renderDays();
           updateStats();
         }
-        var el = document.getElementById(\'syncStatus\');
-        if (el) el.textContent = \'云端同步成功\';
+        var el = document.getElementById('syncStatus');
+        if (el) el.textContent = '云端同步成功';
       } else {
-        var el2 = document.getElementById(\'syncStatus\');
-        if (el2) el2.textContent = \'云端无数据\';
+        var el2 = document.getElementById('syncStatus');
+        if (el2) el2.textContent = '云端无数据';
       }
     } else {
-      var el3 = document.getElementById(\'syncStatus\');
-      if (el3) el3.textContent = \'同步失败(\' + resp.status + \')\';
+      var el3 = document.getElementById('syncStatus');
+      if (el3) el3.textContent = '同步失败(' + resp.status + ')';
     }
   } catch(e) {
-    var el = document.getElementById(\'syncStatus\');
-    if (el) el.textContent = \'离线\';
+    var el = document.getElementById('syncStatus');
+    if (el) el.textContent = '离线';
   }
 }
 
 // Auto-set sync URL based on deployed domain
 (function() {
   setSyncBase(window.location.origin);
-  var el = document.getElementById(\'syncStatus\');
-  if (el && el.textContent === \'-\' || el && !el.textContent) {
-    el.textContent = SYNC_URL_BASE ? \'云端就绪\' : \'本地模式\';
+  var el = document.getElementById('syncStatus');
+  if (el && el.textContent === '-' || el && !el.textContent) {
+    el.textContent = SYNC_URL_BASE ? '云端就绪' : '本地模式';
   }
 })();
 
 function manualSync() {
   var userId = localStorage.getItem("studyTrackerUserId");
-  var el = document.getElementById(\'syncStatus\');
+  var el = document.getElementById('syncStatus');
   if (!userId) {
-    userId = \'user_\' + Date.now() + \'_\' + Math.random().toString(36).substr(2, 9);
+    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("studyTrackerUserId", userId);
   }
-  if (el) el.textContent = \'同步中...\';
+  if (el) el.textContent = '同步中...';
   saveToCloud(userId).then(function() {
     loadFromCloud(userId);
     updateStats();
@@ -870,20 +870,20 @@ function manualSync() {
 function showSyncCode() {
   var userId = localStorage.getItem("studyTrackerUserId");
   if (!userId) {
-    userId = \'user_\' + Date.now() + \'_\' + Math.random().toString(36).substr(2, 9);
+    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem("studyTrackerUserId", userId);
   }
   var code = btoa(userId);
-  var msg = \'🔗 你的同步码：\
+  var msg = '🔗 你的同步码：\
 \
-\' + code + \'\
+' + code + '\
 \
-把这个码发给对方，对方点击「📱 输入同步码」输入后即可共享数据。\';
+把这个码发给对方，对方点击「📱 输入同步码」输入后即可共享数据。';
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(code).then(function() {
-      alert(msg + \'\
+      alert(msg + '\
 \
-✅ 已复制到剪贴板！\');
+✅ 已复制到剪贴板！');
     }).catch(function() {
       prompt(msg, code);
     });
@@ -893,34 +893,34 @@ function showSyncCode() {
 }
 
 function enterSyncCode() {
-  var code = prompt(\'请输入对方的同步码：\');
+  var code = prompt('请输入对方的同步码：');
   if (!code || !code.trim()) return;
   try {
     var userId = atob(code.trim());
-    if (!userId || !userId.startsWith(\'user_\')) {
-      alert(\'❌ 无效的同步码，请检查后重试。\');
+    if (!userId || !userId.startsWith('user_')) {
+      alert('❌ 无效的同步码，请检查后重试。');
       return;
     }
     localStorage.setItem("studyTrackerUserId", userId);
-    var el = document.getElementById(\'syncStatus\');
-    if (el) el.textContent = \'同步中...\';
+    var el = document.getElementById('syncStatus');
+    if (el) el.textContent = '同步中...';
     loadFromCloud(userId).then(function() {
       updateStats();
       renderDays();
-      if (el) el.textContent = \'云端同步成功\';
+      if (el) el.textContent = '云端同步成功';
     });
   } catch(e) {
-    alert(\'❌ 无效的同步码，请检查后重试。\');
+    alert('❌ 无效的同步码，请检查后重试。');
   }
 }
 
 function exportData() {
   var dataStr = JSON.stringify(state, null, 2);
-  var blob = new Blob([dataStr], { type: \'application/json\' });
+  var blob = new Blob([dataStr], { type: 'application/json' });
   var url = URL.createObjectURL(blob);
-  var a = document.createElement(\'a\');
+  var a = document.createElement('a');
   a.href = url;
-  a.download = \'jojo_checkin_backup_\' + new Date().toISOString().substr(0,10) + \'.json\';
+  a.download = 'jojo_checkin_backup_' + new Date().toISOString().substr(0,10) + '.json';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -936,10 +936,10 @@ function importData(fileInput) {
       var imported = JSON.parse(e.target.result);
       state = imported;
       localStorage.setItem("studyTrackerState_v8", JSON.stringify(state));
-      alert(\'导入成功！\');
+      alert('导入成功！');
       location.reload();
     } catch(err) {
-      alert(\'导入失败：文件格式错误\');
+      alert('导入失败：文件格式错误');
     }
   };
   reader.readAsText(file);
@@ -1162,18 +1162,18 @@ function renderDayCard(day) {
     else if (b.indexOf("冲刺课") !== -1) cls = "sprint";
     else if (b.indexOf("最后") !== -1) cls = "exam";
     else if (b.indexOf("考试日") !== -1) cls = "school";
-    return "<span class=\\"day-badge " + cls + "\\">" + b + "</span>";
+    return "<span class=\"day-badge " + cls + "\">" + b + "</span>";
   }).join("");
 
   var progressHtml = totalCount > 0
-    ? ("<div class=\\"date-progress-mini\\"><strong>" + completedCount + "</strong>/" + totalCount + " 完成 | +" + earnedPoints + "分</div>")
+    ? ("<div class=\"date-progress-mini\"><strong>" + completedCount + "</strong>/" + totalCount + " 完成 | +" + earnedPoints + "分</div>")
     : "";
 
-  var html = "<div class=\\"day-card " + cardClass + "\\">" +
-    "<div class=\\"date-row\\">" +
-      "<div class=\\"date-info\\">" +
-        "<span class=\\"date-text\\">" + day.date + "</span>" +
-        "<span class=\\"weekday-text\\">" + day.day + "</span>" +
+  var html = "<div class=\"day-card " + cardClass + "\">" +
+    "<div class=\"date-row\">" +
+      "<div class=\"date-info\">" +
+        "<span class=\"date-text\">" + day.date + "</span>" +
+        "<span class=\"weekday-text\">" + day.day + "</span>" +
         badgesHtml +
       "</div>" +
       progressHtml +
@@ -1183,23 +1183,23 @@ function renderDayCard(day) {
     if (day.specialCheer.cheerKind === "exam") {
       // 6/27 考试日 - 可点击切换鼓励语
       var examMsgIdx = state.examCheerIdx !== undefined ? state.examCheerIdx : 0;
-      html += "<div class=\\"big-cheer exam-cheer\\" id=\\"examCheerBox\\">" +
-        "<span class=\\"big-emoji\\">" + day.specialCheer.emoji + "</span>" +
-        "<div class=\\"big-text\\" id=\\"examCheerMain\\">" + day.specialCheer.text + "</div>" +
-        "<div class=\\"sub-text\\" id=\\"examCheerSub\\">" + day.specialCheer.sub + "</div>" +
-        "<button class=\\"exam-cheer-btn\\" id=\\"examCheerBtn\\" onclick=\\"rotateExamCheer()\\">" +
+      html += "<div class=\"big-cheer exam-cheer\" id=\"examCheerBox\">" +
+        "<span class=\"big-emoji\">" + day.specialCheer.emoji + "</span>" +
+        "<div class=\"big-text\" id=\"examCheerMain\">" + day.specialCheer.text + "</div>" +
+        "<div class=\"sub-text\" id=\"examCheerSub\">" + day.specialCheer.sub + "</div>" +
+        "<button class=\"exam-cheer-btn\" id=\"examCheerBtn\" onclick=\"rotateExamCheer()\">" +
           "🍀 再来一句鼓励！</button>" +
       "</div>";
     } else {
       // 6/26 最后一天 - 静态加油卡
-      html += "<div class=\\"big-cheer\\">" +
-        "<span class=\\"big-emoji\\">" + day.specialCheer.emoji + "</span>" +
-        "<div class=\\"big-text\\">" + day.specialCheer.text + "</div>" +
-        "<div class=\\"sub-text\\">" + day.specialCheer.sub + "</div>" +
+      html += "<div class=\"big-cheer\">" +
+        "<span class=\"big-emoji\">" + day.specialCheer.emoji + "</span>" +
+        "<div class=\"big-text\">" + day.specialCheer.text + "</div>" +
+        "<div class=\"sub-text\">" + day.specialCheer.sub + "</div>" +
       "</div>";
     }
   } else if (day.cheer) {
-    html += "<div class=\\"cheer-msg\\"><span class=\\"cheer-emoji\\">💌</span> " + day.cheer + "</div>";
+    html += "<div class=\"cheer-msg\"><span class=\"cheer-emoji\">💌</span> " + day.cheer + "</div>";
   }
 
   if (totalCount > 0 || day.tasks.length > 0) {
@@ -1228,11 +1228,11 @@ function renderDayCard(day) {
       var cssClass = sectionCss[secName] || "sec-other";
       var icon = sectionIcons[secName] || "📌";
 
-      html += "<div class=\\"task-section " + cssClass + "\\">" +
-        "<div class=\\"task-section-header\\">" +
-          "<span class=\\"section-icon\\">" + icon + "</span>" + secName +
+      html += "<div class=\"task-section " + cssClass + "\">" +
+        "<div class=\"task-section-header\">" +
+          "<span class=\"section-icon\">" + icon + "</span>" + secName +
         "</div>" +
-        "<div class=\\"task-row\\">";
+        "<div class=\"task-row\">";
 
       for (var ti2 = 0; ti2 < sections[secName].length; ti2++) {
         var task = sections[secName][ti2];
@@ -1241,18 +1241,18 @@ function renderDayCard(day) {
           done = task.ct.timerState === 2;
           inProg = task.ct.timerState === 1;
           if (inProg) {
-            timerHtml = "<span class=\\"task-timer\\" data-day=\\"" + dayKey + "\\" data-idx=\\"" + task.idx.replace("custom_","") + "\\" data-custom=\\"1\\">" +
-              "<span class=\\"timer-start\\">开始</span>" +
-              "<span class=\\"timer-elapsed\\">0秒</span>" +
-              "<span class=\\"timer-label\\">计时中</span>" +
+            timerHtml = "<span class=\"task-timer\" data-day=\"" + dayKey + "\" data-idx=\"" + task.idx.replace("custom_","") + "\" data-custom=\"1\">" +
+              "<span class=\"timer-start\">开始</span>" +
+              "<span class=\"timer-elapsed\">0秒</span>" +
+              "<span class=\"timer-label\">计时中</span>" +
             "</span>";
           } else if (done) {
             var dur = task.ct.endTime - task.ct.startTime;
             var ctEndStr = task.ct.endTime ? formatTime(task.ct.endTime) : "--:--";
             var ctStartStr = task.ct.startTime ? formatTime(task.ct.startTime) : "--:--";
-            timerHtml = "<span class=\\"task-done-time\\">" +
-              "<span class=\\"done-times\\">" + ctStartStr + " → " + ctEndStr + "</span>" +
-              "<span class=\\"done-dur\\">" + formatDuration(dur) + "</span>" +
+            timerHtml = "<span class=\"task-done-time\">" +
+              "<span class=\"done-times\">" + ctStartStr + " → " + ctEndStr + "</span>" +
+              "<span class=\"done-dur\">" + formatDuration(dur) + "</span>" +
             "</span>";
           }
         } else {
@@ -1260,51 +1260,51 @@ function renderDayCard(day) {
           done = ts === 2;
           inProg = ts === 1;
           if (inProg) {
-            timerHtml = "<span class=\\"task-timer\\" data-day=\\"" + dayKey + "\\" data-idx=\\"" + task.idx + "\\" data-custom=\\"0\\">" +
-              "<span class=\\"timer-start\\">开始</span>" +
-              "<span class=\\"timer-elapsed\\">0秒</span>" +
-              "<span class=\\"timer-label\\">计时中</span>" +
+            timerHtml = "<span class=\"task-timer\" data-day=\"" + dayKey + "\" data-idx=\"" + task.idx + "\" data-custom=\"0\">" +
+              "<span class=\"timer-start\">开始</span>" +
+              "<span class=\"timer-elapsed\">0秒</span>" +
+              "<span class=\"timer-label\">计时中</span>" +
             "</span>";
           } else if (done && dayState.tasks[task.idx + "_dur"]) {
             var ts_end = dayState.tasks[task.idx + "_endTime"];
             var ts_start2 = dayState.tasks[task.idx + "_start"];
             var ts_start_str2 = ts_start2 ? formatTime(ts_start2) : "--:--";
             var ts_end_str = ts_end ? formatTime(ts_end) : "--:--";
-            timerHtml = "<span class=\\"task-done-time\\">" +
-              "<span class=\\"done-times\\">" + ts_start_str2 + " → " + ts_end_str + "</span>" +
-              "<span class=\\"done-dur\\">" + formatDuration(dayState.tasks[task.idx + "_dur"]) + "</span>" +
+            timerHtml = "<span class=\"task-done-time\">" +
+              "<span class=\"done-times\">" + ts_start_str2 + " → " + ts_end_str + "</span>" +
+              "<span class=\"done-dur\">" + formatDuration(dayState.tasks[task.idx + "_dur"]) + "</span>" +
             "</span>";
           }
         }
 
         var cls = done ? "done" : inProg ? "in-progress" : "";
         var clickHandler = task.isCustom
-          ? "onclick=\\"toggleCustomTask(\'" + dayKey + "\'," + task.idx.replace("custom_","") + ")\\""
-          : "onclick=\\"toggleTask(\'" + dayKey + "\'," + task.idx + "," + task.points + ")\\"";
+          ? "onclick=\"toggleCustomTask('" + dayKey + "'," + task.idx.replace("custom_","") + ")\""
+          : "onclick=\"toggleTask('" + dayKey + "'," + task.idx + "," + task.points + ")\"";
         var delBtn = task.isCustom
-          ? ("<span style=\\"cursor:pointer;color:#e74c3c;font-size:0.85em;margin-left:4px;\\" onclick=\\"event.stopPropagation();removeCustomTask(\'" + dayKey + "\'," + task.idx.replace("custom_","") + ")\\">✕</span>")
+          ? ("<span style=\"cursor:pointer;color:#e74c3c;font-size:0.85em;margin-left:4px;\" onclick=\"event.stopPropagation();removeCustomTask('" + dayKey + "'," + task.idx.replace("custom_","") + ")\">✕</span>")
           : "";
 
-        html += "<div class=\\"task-item " + cls + "\\" " + clickHandler + ">" +
-          "<span class=\\"task-check\\"></span>" +
-          "<span class=\\"task-text\\">" + task.text + "</span>" +
-          "<span class=\\"task-points\\">+" + task.points + "</span>" +
+        html += "<div class=\"task-item " + cls + "\" " + clickHandler + ">" +
+          "<span class=\"task-check\"></span>" +
+          "<span class=\"task-text\">" + task.text + "</span>" +
+          "<span class=\"task-points\">+" + task.points + "</span>" +
           timerHtml +
           delBtn +
         "</div>";
       }
 
       if (secName === "其他") {
-        html += "</div><div class=\\"custom-task-input\\">" +
-          "<select id=\\"customCat_" + dayKey + "\\" style=\\"padding:6px 8px;border-radius:8px;border:1.5px solid #ddd;font-size:0.9em;\\">" +
-            "<option value=\\"校内\\">校内</option>" +
-            "<option value=\\"英语\\">英语</option>" +
-            "<option value=\\"数思\\">数思</option>" +
-            "<option value=\\"其他\\" selected>其他作业</option>" +
+        html += "</div><div class=\"custom-task-input\">" +
+          "<select id=\"customCat_" + dayKey + "\" style=\"padding:6px 8px;border-radius:8px;border:1.5px solid #ddd;font-size:0.9em;\">" +
+            "<option value=\"校内\">校内</option>" +
+            "<option value=\"英语\">英语</option>" +
+            "<option value=\"数思\">数思</option>" +
+            "<option value=\"其他\" selected>其他作业</option>" +
           "</select>" +
-          "<input type=\\"text\\" id=\\"customText_" + dayKey + "\\" placeholder=\\"填写完成内容\\">" +
-          "<input type=\\"number\\" id=\\"customPts_" + dayKey + "\\" placeholder=\\"积分\\" min=\\"1\\" max=\\"50\\" value=\\"5\\">" +
-          "<button class=\\"custom-add-btn\\" onclick=\\"addCustomTask(\'" + dayKey + "\')\\">+添加</button>" +
+          "<input type=\"text\" id=\"customText_" + dayKey + "\" placeholder=\"填写完成内容\">" +
+          "<input type=\"number\" id=\"customPts_" + dayKey + "\" placeholder=\"积分\" min=\"1\" max=\"50\" value=\"5\">" +
+          "<button class=\"custom-add-btn\" onclick=\"addCustomTask('" + dayKey + "')\">+添加</button>" +
         "</div>";
       } else {
         html += "</div>";
@@ -1313,9 +1313,9 @@ function renderDayCard(day) {
     }
 
     if (totalCount > 0) {
-      html += "<div class=\\"day-progress\\">" +
-        "<div class=\\"progress-bar\\">" +
-          "<div class=\\"progress-fill " + (isCompleted ? "complete" : "") + "\\" style=\\"width:" + percent + "%\\"></div>" +
+      html += "<div class=\"day-progress\">" +
+        "<div class=\"progress-bar\">" +
+          "<div class=\"progress-fill " + (isCompleted ? "complete" : "") + "\" style=\"width:" + percent + "%\"></div>" +
         "</div>" +
       "</div>";
     }
@@ -1337,9 +1337,9 @@ function renderDayCard(day) {
       if (customTasks[c3].timerState === 1) inProgCnt++;
     }
     if (doneAll > 0 || inProgCnt > 0) {
-      var ip = inProgCnt > 0 ? (" | <span style=\\"color:#ff9800\\">" + inProgCnt + "项进行中</span>") : "";
-      html += "<div class=\\"day-summary\\">" +
-        "⏱ 本日学习：<span class=\\"summary-value\\">" + totalCount + "</span>项 | 已完成" + doneAll + "项" + ip +
+      var ip = inProgCnt > 0 ? (" | <span style=\"color:#ff9800\">" + inProgCnt + "项进行中</span>") : "";
+      html += "<div class=\"day-summary\">" +
+        "⏱ 本日学习：<span class=\"summary-value\">" + totalCount + "</span>项 | 已完成" + doneAll + "项" + ip +
       "</div>";
     }
   }
@@ -1372,7 +1372,7 @@ function renderWeekTabs() {
   var html = "";
   for (var i2 = 0; i2 < weeks.length; i2++) {
     var w = weeks[i2];
-    html += "<button class=\\"week-tab " + (state.currentWeek === w ? "active" : "") + "\\" onclick=\\"switchWeek(" + w + ")\\">第" + w + "周</button>";
+    html += "<button class=\"week-tab " + (state.currentWeek === w ? "active" : "") + "\" onclick=\"switchWeek(" + w + ")\">第" + w + "周</button>";
   }
   document.getElementById("weekTabs").innerHTML = html;
 }
@@ -1474,14 +1474,14 @@ function renderRewards() {
     for (var ri = 0; ri < rewards.length; ri++) {
       var r = rewards[ri];
       var canAfford = available >= r.cost;
-      html += \'<div class="reward-card">\' +
-        \'<div class="reward-icon">\' + r.icon + \'</div>\' +
-        \'<div class="reward-name">\' + r.name + \'</div>\' +
-        \'<div class="reward-cost">\' + r.cost + \'分</div>\' +
-        \'<div class="reward-desc">\' + r.desc + \'</div>\' +
-        \'<button class="reward-btn" \' + (canAfford ? \'onclick="redeemReward(\\\'\' + r.id + \'\\\')"\' : \'disabled\') + \'>\' +
-        (canAfford ? "兑换" : "积分不足") + \'</button>\' +
-        \'</div>\';
+      html += '<div class="reward-card">' +
+        '<div class="reward-icon">' + r.icon + '</div>' +
+        '<div class="reward-name">' + r.name + '</div>' +
+        '<div class="reward-cost">' + r.cost + '分</div>' +
+        '<div class="reward-desc">' + r.desc + '</div>' +
+        '<button class="reward-btn" ' + (canAfford ? 'onclick="redeemReward(\'' + r.id + '\')"' : 'disabled') + '>' +
+        (canAfford ? "兑换" : "积分不足") + '</button>' +
+        '</div>';
     }
     return html;
   }
@@ -1492,16 +1492,16 @@ function renderRewards() {
 
   // 兑换记录
   if (state.redeemHistory.length === 0) {
-    document.getElementById("redeemHistory").innerHTML = \'<div class="empty-state" style="padding:20px;"><div>还没有兑换记录</div></div>\';
+    document.getElementById("redeemHistory").innerHTML = '<div class="empty-state" style="padding:20px;"><div>还没有兑换记录</div></div>';
   } else {
     var histHtml = "";
     for (var hi = 0; hi < state.redeemHistory.length; hi++) {
       var h = state.redeemHistory[hi];
-      histHtml += \'<div class="history-item">\' +
-        \'<span class="hi-name">\' + h.icon + \' \' + h.name + \'</span>\' +
-        \'<span class="hi-cost">-\' + h.cost + \'</span>\' +
-        \'<span class="hi-date">\' + h.date + \'</span>\' +
-        \'</div>\';
+      histHtml += '<div class="history-item">' +
+        '<span class="hi-name">' + h.icon + ' ' + h.name + '</span>' +
+        '<span class="hi-cost">-' + h.cost + '</span>' +
+        '<span class="hi-date">' + h.date + '</span>' +
+        '</div>';
     }
     document.getElementById("redeemHistory").innerHTML = histHtml;
   }
