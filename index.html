@@ -785,15 +785,15 @@ const SUPABASE_URL = 'https://mdkokgepknmphhyjgrvv.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ka29rZ2Vwa25tcGhoeWpncnZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODc1NTksImV4cCI6MjA5NDE2MzU1OX0.sFJ5Ebtty1H2shwwPy-g8H3brVShOJz-3dEFB2x_IkA';
 async function saveToCloud(userId) {
   try {
-    var resp = await fetch(SUPABASE_URL + '/rest/v1/checkin_data?user_id=eq.' + encodeURIComponent(userId), {
-      method: 'PUT',
+    var resp = await fetch(SUPABASE_URL + '/rest/v1/checkin_data?on_conflict=user_id', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'resolution=upsert'
+        'Prefer': 'return=representation,resolution=merge-duplicates'
       },
-      body: JSON.stringify({ state: state })
+      body: JSON.stringify({ user_id: userId, state: state })
     });
     if (resp.ok) {
       var el = document.getElementById('syncStatus');
