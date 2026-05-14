@@ -747,7 +747,7 @@ function loadState() {
   // Also try to fetch from cloud
   var storedUserId = localStorage.getItem("studyTrackerUserId");
   if (storedUserId) {
-    loadFromCloud(storedUserId).then(function() { renderDays(); updateStats(); });
+    loadFromCloud(storedUserId).then(function() { renderWeek(state.currentWeek); updateStats(); });
   } else {
     // Check URL for sync code
     var urlParams = new URLSearchParams(window.location.search);
@@ -757,7 +757,7 @@ function loadState() {
         var syncUserId = atob(syncParam);
         if (syncUserId && syncUserId.startsWith('user_')) {
           localStorage.setItem("studyTrackerUserId", syncUserId);
-          loadFromCloud(syncUserId).then(function() { renderDays(); updateStats(); });
+          loadFromCloud(syncUserId).then(function() { renderWeek(state.currentWeek); updateStats(); });
         }
       } catch(e) {}
     }
@@ -825,7 +825,7 @@ async function loadFromCloud(userId) {
         if (cloudState.lastSynced && (!localState || !localState.lastSynced || new Date(cloudState.lastSynced) > new Date(localState.lastSynced))) {
           state = cloudState;
           localStorage.setItem("studyTrackerState_v8", JSON.stringify(state));
-          renderDays();
+          renderWeek(state.currentWeek);
           updateStats();
         }
         var el = document.getElementById('syncStatus');
@@ -906,7 +906,7 @@ function enterSyncCode() {
     if (el) el.textContent = '同步中...';
     loadFromCloud(userId).then(function() {
       updateStats();
-      renderDays();
+      renderWeek(state.currentWeek);
       if (el) el.textContent = '云端同步成功';
     });
   } catch(e) {
